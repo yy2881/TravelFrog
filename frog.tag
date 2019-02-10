@@ -11,6 +11,8 @@
         <button type="button" class="btn btn-success start" data-toggle="modal" data-target="#modal">Start new journey</button>
 
       </div>
+
+
       <div class="col-sm">
         <div class="container">
           <div class="row">
@@ -53,6 +55,18 @@
                   <a class="dropdown-item" onclick={showClover}>clover</a>
                 </div>
               </div>
+            </div>
+          </div>
+
+          <div class="row teach">
+            <input type="text" class="words" ref="messageEl" placeholder="Teach your frog some words...">
+            <button type="button" class="btn btn-outline-success submit" onclick={ submit }>Tell him</button>
+
+          </div>
+
+          <div class="row">
+            <div class="interaction" each= { myWords }>
+              <p> { word } </p>
             </div>
           </div>
         </div>
@@ -133,6 +147,17 @@
     }
     var audio = new Audio("BGM.mp3");
     audio.play();
+
+    this.myWords = [{word: "Words mastered:"}];
+
+    this.submit = function(event){
+      console.log(event);
+      var content = " "+this.refs.messageEl.value ;
+      var wordAdd = {word: content};
+      this.myWords.push(wordAdd);
+      this.refs.messageEl.value = "";
+   }
+
   </script>
 
   <style>
@@ -155,6 +180,18 @@
     }
     .card {
       margin-left: -15px;
+    }
+    .teach{
+      margin-top: 20px;
+      margin-left: 5px;
+    }
+    .submit{
+      margin-top: 10px;
+      margin-left: 20px;
+    }
+    .interaction {
+      margin-top: 20px;
+      margin-left: 20px;
     }
   </style>
 </frog>
