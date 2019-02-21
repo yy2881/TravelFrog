@@ -16,46 +16,17 @@
       <div class="col-sm">
         <div class="container">
           <div class="row">
+
             <div class="col-sm">
-              <img src="" id="foodImage">
-              <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle btn-success" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Choose food
-                </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                  <a class="dropdown-item" onclick={showFood}>bagel</a>
-                  <a class="dropdown-item" onclick={showFood}>pie</a>
-                  <a class="dropdown-item" onclick={showFood}>sandwich</a>
-                  <a class="dropdown-item" onclick={showFood}>scorn</a>
-                </div>
-              </div>
+              <food></food>
             </div>
             <div class="col-sm">
-              <img src="" id="itemImage">
-              <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle btn-success" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Choose item
-                </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                  <a class="dropdown-item" onclick={showItem}>bowl</a>
-                  <a class="dropdown-item" onclick={showItem}>lamp</a>
-                  <a class="dropdown-item" onclick={showItem}>tent</a>
-                </div>
-              </div>
+             <item></item>
             </div>
             <div class="col-sm">
-              <img src="" id="charmImage">
-              <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle btn-success" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Choose charm
-                </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" onclick={showButton}>
-                  <a class="dropdown-item" onclick={showCharm}>amulet</a>
-                  <a class="dropdown-item" onclick={showCharm}>bell</a>
-                  <a class="dropdown-item" onclick={showCharm}>clover</a>
-                </div>
-              </div>
+             <charm></charm>
             </div>
+
           </div>
 
           <div class="row teach">
@@ -69,6 +40,7 @@
               <p> { word } </p>
             </div>
           </div>
+
         </div>
       </div>
     </div>
@@ -84,7 +56,7 @@
           </button>
         </div>
         <div class="modal-body">
-          <img src={ cardImage } class="card"/>
+          <img src={ this.cardImage } class="card"/>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-dismiss="modal" onclick={savePicture}>Save the postcard</button>
@@ -100,9 +72,13 @@
   <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 
   <script>
-    this.cardImage = "images/r" + Math.floor(Math.random() * 9) + ".png";
-    this.numOfCard = 0;
 
+
+    var that = this;
+    this.cardImage = "images/r" + Math.floor(Math.random() * 9) + ".png";
+
+    this.numOfCard = 0;
+    this.modalname = "modal"
 
     showFood(event) {
       var text = event.target.innerHTML;
@@ -119,11 +95,18 @@
       var text = event.target.innerHTML;
       var x = document.getElementById('itemImage');
       x.setAttribute("src", "images/item/"+text+".png");
+      observable.trigger('pickCard',text);
     }
+
 
     savePicture(e) {
       this.numOfCard = this.numOfCard + 1;
     }
+
+    observable.on('pickCard',function(text){
+      that.cardImage = "images/"+text+"p.png";
+      that.update();
+    })
 
     var audio = new Audio("BGM.mp3");
     audio.play();

@@ -18,11 +18,17 @@
   <frog></frog>
 
   <script type="riot/tag" src="frog.tag"></script>
+  <script src="card.tag" type="riot/tag"></script>
+  <script src="food.tag" type="riot/tag"></script>
+  <script src="item.tag" type="riot/tag"></script>
+  <script src="charm.tag" type="riot/tag"></script>
   <script src="https://cdn.jsdelivr.net/npm/riot@3.8/riot+compiler.min.js"></script>
 
   <script>
+
+    var observable = riot.observable();
     riot.mount("*");
-    
+
   </script>
 
 </body>
