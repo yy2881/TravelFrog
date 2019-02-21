@@ -23,10 +23,10 @@
                   Choose food
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                  <a class="dropdown-item" onclick={showBagel}>bagel</a>
-                  <a class="dropdown-item" onclick={showPie}>pie</a>
-                  <a class="dropdown-item" onclick={showSandwich}>sandwich</a>
-                  <a class="dropdown-item" onclick={showScorn}>scorn</a>
+                  <a class="dropdown-item" onclick={showFood}>bagel</a>
+                  <a class="dropdown-item" onclick={showFood}>pie</a>
+                  <a class="dropdown-item" onclick={showFood}>sandwich</a>
+                  <a class="dropdown-item" onclick={showFood}>scorn</a>
                 </div>
               </div>
             </div>
@@ -37,9 +37,9 @@
                   Choose item
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                  <a class="dropdown-item" onclick={showBowl}>bowl</a>
-                  <a class="dropdown-item" onclick={showLamp}>lamp</a>
-                  <a class="dropdown-item" onclick={showTent}>tent</a>
+                  <a class="dropdown-item" onclick={showItem}>bowl</a>
+                  <a class="dropdown-item" onclick={showItem}>lamp</a>
+                  <a class="dropdown-item" onclick={showItem}>tent</a>
                 </div>
               </div>
             </div>
@@ -50,9 +50,9 @@
                   Choose charm
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" onclick={showButton}>
-                  <a class="dropdown-item" onclick={showAmulet}>amulet</a>
-                  <a class="dropdown-item" onclick={showBell}>bell</a>
-                  <a class="dropdown-item" onclick={showClover}>clover</a>
+                  <a class="dropdown-item" onclick={showCharm}>amulet</a>
+                  <a class="dropdown-item" onclick={showCharm}>bell</a>
+                  <a class="dropdown-item" onclick={showCharm}>clover</a>
                 </div>
               </div>
             </div>
@@ -61,7 +61,7 @@
           <div class="row teach">
             <input type="text" class="words" ref="messageEl" placeholder="Teach your frog some words...">
             <button type="button" class="btn btn-outline-success submit" onclick={ submit }>Tell him</button>
-
+              <button type="button" class="btn btn-outline-success submit" onclick={ remove }>Forget this word</button>
           </div>
 
           <div class="row">
@@ -102,49 +102,29 @@
   <script>
     this.cardImage = "images/r" + Math.floor(Math.random() * 9) + ".png";
     this.numOfCard = 0;
-    showBagel(e) {
+
+
+    showFood(event) {
+      var text = event.target.innerHTML;
       var x = document.getElementById('foodImage');
-      x.setAttribute("src", "images/food/bagel.png");
+      x.setAttribute("src", "images/food/"+text+".png");
     }
-    showPie(e) {
-      var x = document.getElementById('foodImage');
-      x.setAttribute("src", "images/food/pie.png");
-    }
-    showSandwich(e) {
-      var x = document.getElementById('foodImage');
-      x.setAttribute("src", "images/food/sandwich.png");
-    }
-    showScorn(e) {
-      var x = document.getElementById('foodImage');
-      x.setAttribute("src", "images/food/scorn.png");
-    }
-    showAmulet(e) {
+
+    showCharm(event) {
+      var text = event.target.innerHTML;
       var x = document.getElementById('charmImage');
-      x.setAttribute("src", "images/charm/amulet.png");
+      x.setAttribute("src", "images/charm/"+text+".png");
     }
-    showBell(e) {
-      var x = document.getElementById('charmImage');
-      x.setAttribute("src", "images/charm/bell.png");
-    }
-    showClover(e) {
-      var x = document.getElementById('charmImage');
-      x.setAttribute("src", "images/charm/clover.png");
-    }
-    showBowl(e) {
+    showItem(event) {
+      var text = event.target.innerHTML;
       var x = document.getElementById('itemImage');
-      x.setAttribute("src", "images/item/bowl.png");
+      x.setAttribute("src", "images/item/"+text+".png");
     }
-    showLamp(e) {
-      var x = document.getElementById('itemImage');
-      x.setAttribute("src", "images/item/lamp.png");
-    }
-    showTent(e) {
-      var x = document.getElementById('itemImage');
-      x.setAttribute("src", "images/item/tent.png");
-    }
+
     savePicture(e) {
       this.numOfCard = this.numOfCard + 1;
     }
+
     var audio = new Audio("BGM.mp3");
     audio.play();
 
@@ -157,6 +137,23 @@
       this.myWords.push(wordAdd);
       this.refs.messageEl.value = "";
    }
+
+   this.remove = function(event) {
+    // console.log('EVENT:', event);
+    // console.log('EVENT.ITEM', event.item);
+    var wordText = event.target;
+    for(var i = 1; i < this.myWords.length; i++){
+      var numOfIfExist = this.myWords[i].word.search(wordText);
+      console.log(numOfIfExist);
+      if(numOfIfExist!= -1){
+        var index = i;
+        this.myWords.splice(i,1);
+        return;
+      }
+    }
+
+   }
+
 
   </script>
 
