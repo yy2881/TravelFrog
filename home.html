@@ -9,6 +9,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.9.2/firebase.js"></script>
 </head>
 
 <body>
@@ -25,8 +26,19 @@
   <script src="https://cdn.jsdelivr.net/npm/riot@3.8/riot+compiler.min.js"></script>
 
   <script>
+  var observable = riot.observable();
+  var config = {
+  apiKey: "AIzaSyDnauctppQUQBkQhPmfwsz9bRTYKKNYqxA",
+  authDomain: "travelfrog-4bd4b.firebaseapp.com",
+  databaseURL: "https://travelfrog-4bd4b.firebaseio.com",
+  projectId: "travelfrog-4bd4b",
+  storageBucket: "",
+  messagingSenderId: "940196190756"
+};
+firebase.initializeApp(config);
+var database = firebase.database();
+var rootRef = database.ref('/');
 
-    var observable = riot.observable();
     riot.mount("*");
 
   </script>

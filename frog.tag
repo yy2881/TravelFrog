@@ -32,6 +32,7 @@
           <div class="row teach">
             <input type="text" class="words" ref="messageEl" placeholder="Teach your frog some words...">
             <button type="button" class="btn btn-outline-success submit" onclick={ submit }>Tell him</button>
+            <button type="button" class="btn btn-outline-success submit" onclick={ save }>Save Word</button>
               <button type="button" class="btn btn-outline-success submit" onclick={ remove }>Forget this word</button>
           </div>
 
@@ -79,6 +80,50 @@
 
     this.numOfCard = 0;
     this.modalname = "modal"
+    this.messages = [];
+    this.myWords = [{word: "Words mastered:"}];
+      var wordRef = rootRef.child('words');
+
+    this.save = function(){
+			var key = wordRef.push().key;
+			console.log(key);
+
+			// Our data object that we will write to the database.
+			// We could design this model to have other properties, like author.
+		var word = this.refs.messageEl.value;
+
+			wordRef.push(word);
+
+
+		}
+
+    wordRef.on('value', function(snap){
+			let dataAsObj = snap.val();
+
+
+			var tempData = [];
+      console.log(tempData);
+
+			//instead of statically typing out the array value, we now read it in
+			//from the firebase data obj using a js for loop structure
+			for (key in dataAsObj) {
+				tempData.push(dataAsObj[key]);
+			}
+
+			//finally, we copy this array back to our tag's property field
+			// console.log("myMemes", tag.myMemes);
+			that.messages = tempData;
+
+      var content = " "+that.messages[that.messages.length-1];
+        var wordAdd = {word: content};
+      that.myWords.push(wordAdd);
+
+			//same question, 4th time of encounter. Why do we need to call tag update here?
+			that.update();
+		});
+
+
+
 
     showFood(event) {
       var text = event.target.innerHTML;
@@ -111,14 +156,22 @@
     var audio = new Audio("BGM.mp3");
     audio.play();
 
-    this.myWords = [{word: "Words mastered:"}];
+
 
     this.submit = function(event){
-      console.log(event);
-      var content = " "+this.refs.messageEl.value ;
-      var wordAdd = {word: content};
-      this.myWords.push(wordAdd);
-      this.refs.messageEl.value = "";
+
+
+        var content = " "+that.messages ;
+        var wordAdd = {word: content};
+        this.myWords.push(wordAdd);
+        this.refs.messageEl.value = "";
+      //}else {
+      //  var content = " "+this.refs.messageEl.value ;
+    //    var wordAdd = {word: content};
+    //    this.myWords.push(wordAdd);
+      //  this.refs.messageEl.value = "";
+    //  }
+
    }
 
    this.remove = function(event) {
