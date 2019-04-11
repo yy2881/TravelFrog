@@ -9,6 +9,16 @@
         <p>step 2: start a new journey to get postcards</p>
         <h5>Number of postcards: { numOfCard }</h5>
         <button type="button" class="btn btn-success start" data-toggle="modal" data-target="#modal">Start new journey</button>
+        <div class="login" if={!currentUser}>
+    <p>Thanks for visiting. Please proceed to Google Authentication</p>
+    <button type="button" class="btn btn-success" onclick={ logIn }>Login</button>
+  </div>
+        <div if={currentUser}>
+          <div class="login">
+            <p>Welcome to the admin section.</p>
+            <button type="button" class="btn btn-success" onclick={ logOut}>Log Out</button>
+          </div>
+        </div>
 
       </div>
 
@@ -103,9 +113,30 @@
     this.myWords = [];
     var wordRef = rootRef.child('words');
 
+    firebase.auth();
+    var user = firebase.auth().currentUser;
+
+    this.logIn = function () {
+      var provider = new firebase.auth.GoogleAuthProvider();
+      firebase.auth().signInWithPopup(provider);
+    }
+
+    this.logOut = function () {
+      firebase.auth().signOut();
+    }
+
+    firebase.auth().onAuthStateChanged(function (userObj) {
+      that.currentUser = firebase.auth().currentUser;
+      if (userObj) {
+   currentUser = firebase.auth().currentUser;
+ } else {
+   currentUser = null;
+ }
+ that.update();
+    });
+
     this.save = function () {
       var key = wordRef.push().key;
-
 
       // Our data object that we will write to the database. We could design this model to have other properties, like author.
       var word = {
@@ -131,23 +162,15 @@
       //finally, we copy this array back to our tag's property field console.log("myMemes", tag.myMemes);
       that.myWords = tempData;
 
-  //    var content = " " + dataAsObj[dataAsObj.length-1].word;
-  //    var wordAdd = {
-  //      word: content
-  //    };
-  //    that.myWords.push(wordAdd);
-
-      //same question, 4th time of encounter. Why do we need to call tag update here?
+      //    var content = " " + dataAsObj[dataAsObj.length-1].word;    var wordAdd = {      word: content    };    that.myWords.push(wordAdd); same question, 4th time of encounter. Why do we need to call tag update here?
       that.update();
       observable.trigger('updateWords', tempData);
       console.log(that.myWords);
     });
 
-
-
     //order result start
 
-    orderResults(event){
+    orderResults(event) {
       //1. get order value
       let order = this.refs.order.value;
       // console.log("order", order);
@@ -155,21 +178,20 @@
       let orderResult = wordRef;
       console.log("wordRef", wordRef);
 
-      if (order == "difficulty"){
+      if (order == "difficulty") {
         orderResult = orderResult.orderByChild('difficulty');
         console.log("order by difficulty", orderResult);
-      }else{
+      } else {
         // default, nothing happens
       }
 
       orderResult.once('value', function (snap) {
-        // let rawdata = snap.val();
-        // console.log("datafromfb", datafromfb);
+        // let rawdata = snap.val(); console.log("datafromfb", datafromfb);
         let tempData = [];
 
-        snap.forEach(function(child) {
-           tempData.push(child.val()); // NOW THE CHILDREN PRINT IN ORDER
-       });
+        snap.forEach(function (child) {
+          tempData.push(child.val()); // NOW THE CHILDREN PRINT IN ORDER
+        });
 
         that.myWords = tempData;
 
@@ -178,43 +200,41 @@
       });
     }
 
-
     filterResults(event) {
-  //get current filter value
-  var diff = this.refs.difficult.value;
-  //order memes by child property funnees
-  let queryResult = wordRef.orderByChild('difficulty');
-  console.log("queryResult", queryResult);
+      //get current filter value
+      var diff = this.refs.difficult.value;
+      //order memes by child property funnees
+      let queryResult = wordRef.orderByChild('difficulty');
+      console.log("queryResult", queryResult);
 
-  //combine with additional functions to form complex queries
-  if (diff == "easy") {
-    queryResult = queryResult.startAt('0').endAt('2');
-      console.log("queryResult for no fun", queryResult);
-  } else if (diff == "medium") {
-    queryResult = queryResult.startAt('3').endAt('4');
-    console.log("queryResult for very full", queryResult);
-  } else if (diff == "hard") {
-    queryResult = queryResult.equalTo('5');
-    console.log("queryResult for some fun", queryResult);
-  } else {
-    //default, no query needed
-  }
+      //combine with additional functions to form complex queries
+      if (diff == "easy") {
+        queryResult = queryResult.startAt('0').endAt('2');
+        console.log("queryResult for no fun", queryResult);
+      } else if (diff == "medium") {
+        queryResult = queryResult.startAt('3').endAt('4');
+        console.log("queryResult for very full", queryResult);
+      } else if (diff == "hard") {
+        queryResult = queryResult.equalTo('5');
+        console.log("queryResult for some fun", queryResult);
+      } else {
+        //default, no query needed
+      }
 
-  queryResult.once('value', function (snap) {
-    let rawdata = snap.val();
-    // console.log("datafromfb", datafromfb);
-    let tempData = [];
-    for (key in rawdata) {
-      tempData.push(rawdata[key]);
+      queryResult.once('value', function (snap) {
+        let rawdata = snap.val();
+        // console.log("datafromfb", datafromfb);
+        let tempData = [];
+        for (key in rawdata) {
+          tempData.push(rawdata[key]);
+        }
+        // console.log("myMemes", tag.myMemes);
+        that.myWords = tempData;
+
+        that.update();
+        observable.trigger('updateWords', tempData);
+      });
     }
-    // console.log("myMemes", tag.myMemes);
-    that.myWords = tempData;
-
-    that.update();
-    observable.trigger('updateWords', tempData);
-  });
-}
-
 
     showFood(event) {
       var text = event.target.innerHTML;
@@ -249,9 +269,7 @@
     this.submit = function (event) {
 
       var content = " " + that.messages;
-    //  var wordAdd = {
-    //    word: content
-    //  };
+      //  var wordAdd = {    word: content  };
       this.myWords.push(content);
       this.refs.messageEl.value = "";
       //}else {  var content = " "+this.refs.messageEl.value ;    var wordAdd = {word: content};    this.myWords.push(wordAdd);  this.refs.messageEl.value = "";  }
